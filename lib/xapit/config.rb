@@ -54,7 +54,32 @@ module Xapit
       
       # Fetch Xapian::Database object at configured path. Database is stored in memory.
       def database
-        @writable_database || (@database ||= Xapian::Database.new(path))
+        database = @writable_database || (@database ||= Xapian::Database.new(path))
+        
+        if self.expired?
+          puts 'reloaded'
+          database.reopen 
+        end
+        
+        database
+      end
+      
+      # A SHA1 hash to monitor if database is changed
+      #  SHA1 of filesize and last modified timestmp of record database file
+      def expired?
+        expired = false
+              
+        file = Pathname.new(path) + 'record.DB'
+        return false unless file.exist?
+        
+        hash = Digest::SHA1.hexdigest(file.size.to_s + file.mtime.to_s)
+        
+        if @db_hash and @db_hash != hash
+          expired = true
+        end
+        @db_hash = hash
+
+        return expired
       end
       
       # Fetch Xapian::WritableDatabase object at configured path. Database is stored in memory.
