@@ -10,7 +10,7 @@ module Xapit
     end
     
     def find_multiple(ids)
-      @target.find(ids)
+      @target.all(:conditions => { :id => ids } )
     end
     
     def find_each(*args, &block)

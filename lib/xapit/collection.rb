@@ -179,7 +179,7 @@ module Xapit
       matches.map do |match|
         class_name, id = match.document.data.split('-')
         member = records_by_class[class_name].detect { |m| m.id == id.to_i }
-        member.xapit_relevance = match.percent
+        member.xapit_relevance = match.percent unless member.nil?
         member
       end
     end

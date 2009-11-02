@@ -30,6 +30,11 @@ class XapitMember
     find(id)
   end
   
+  # To mimic active record all method
+  def self.all(options)
+    find(options[:conditions][:id])
+  end
+  
   def initialize(attributes = {})
     @@records ||= []
     @id = @@records.size + 1
